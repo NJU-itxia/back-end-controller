@@ -7,14 +7,13 @@ const proxyMiddleWare = require('http-proxy-middleware');
 const auth = require('./util/auth');
 const router = require('./routes/router');
 const error = require('./util/error');
+const config = require('./config/config');
 
 const getToken = auth.getToken;
 const checkToken = auth.checkToken;
 const authCheck = auth.authCheck;
 
 const app = express();
-const proxyPath = 'http://localhost:8080';
-const proxyOption = {target: proxyPath, changeOrigin: true};
 
 const allowCrossDomain = function (req, res, next) {
     res.header('Access-Control-Allow-Origin', req.headers.origin);
@@ -35,7 +34,14 @@ app.use(cookieParser());
 app.use('/', checkToken);
 app.use('/', authCheck);
 app.use('/', router);
-app.use('/customer', proxyMiddleWare(proxyOption));
-app.use(error.appError);
 
+for (let path in config.proxy) {
+    if(config.proxy.hasOwnProperty(path)) {
+        const proxyPath = config.proxy[path];
+        const proxyOption = {target: proxyPath, changeOrigin: true};
+        app.use(path, proxyMiddleWare(proxyOption))
+    }
+}
+// app.use('/customer', proxyMiddleWare(proxyOption));
+app.use(error.appError);
 module.exports = app;
