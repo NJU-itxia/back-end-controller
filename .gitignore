@@ -1,7 +1,6 @@
+/config/config.js
 /.git
 /.idea
-/bin
 /node_modules
-/config
 
 package-lock.json
