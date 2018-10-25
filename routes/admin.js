@@ -7,6 +7,9 @@ const getToken = auth.getToken;
 
 module.exports = router;
 
+/**
+ * 登陆，需要修改
+ */
 router.use('/login', async (req, res, next) => {
     const id = req.body.id;
     const password = req.body.password;
@@ -27,6 +30,9 @@ router.use('/login', async (req, res, next) => {
     }
 });
 
+/**
+ * 登出
+ */
 router.use('/logout', (req, res, next) => {
     res.clearCookie('token');
     res.json({

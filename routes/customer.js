@@ -6,6 +6,9 @@ const getToken = auth.getToken;
 
 module.exports = router;
 
+/**
+ * 客户登入
+ */
 router.use('/login', (req, res, next) => {
     req.auth = {
         phone: req.body.phone,
@@ -17,6 +20,9 @@ router.use('/login', (req, res, next) => {
     });
 });
 
+/**
+ * 客户登出
+ */
 router.use('/logout', (req, res, next) => {
     res.clearCookie('token');
     res.json({
