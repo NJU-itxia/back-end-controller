@@ -42,6 +42,6 @@ for (let path in config.proxy) {
         app.use(path, proxyMiddleWare(proxyOption))
     }
 }
-// app.use('/customer', proxyMiddleWare(proxyOption));
+
 app.use(error.appError);
 module.exports = app;
