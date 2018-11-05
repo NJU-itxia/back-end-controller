@@ -8,7 +8,8 @@ const getToken = auth.getToken;
 module.exports = router;
 
 /**
- * 登陆，需要修改
+ * admin用户登陆
+ * 如果将数据层改到java端，则需要修改
  */
 router.use('/login', async (req, res, next) => {
     const id = req.body.id;
@@ -31,7 +32,8 @@ router.use('/login', async (req, res, next) => {
 });
 
 /**
- * 登出
+ * 登出，使用token
+ * token会在auth.js中使用checkToken方法检查
  */
 router.use('/logout', (req, res, next) => {
     res.clearCookie('token');

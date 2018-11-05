@@ -1,6 +1,10 @@
 const mysql = require('mysql');
 const config = require('../config/config');
 
+/**
+ * 初始化数据库连接池
+ * @type {Pool}
+ */
 const pool = mysql.createPool({
     host: config.db.host,
     user: config.db.user,
@@ -8,8 +12,21 @@ const pool = mysql.createPool({
     database: config.db.database,
 });
 
+/**
+ * 其实我不知道
+ * 这一句式什么意思呢？
+ * @type {{}}
+ */
 const dataUtil = exports = module.exports = {};
 
+/**
+ * 检查后台账号登陆是否成功
+ * property checkLogin is not defined in type(解决这个)
+ * @param username 用户名
+ * @param password 密码
+ * @param next 回调方法
+ * @returns {Promise<any>}
+ */
 dataUtil.checkLogin = (username, password, next) => {
     const queryStr = 'select account, password, admin from members where account= ?';
     return new Promise((resolve, reject) => {
