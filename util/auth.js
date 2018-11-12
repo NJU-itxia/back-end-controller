@@ -11,11 +11,11 @@ const readAuthJson = file.readAuthJson;
  */
 const ignoreUrl = (() => {
     let result = {};
-    const urls = ['/customer/login', '/admin/login', '/service/sms'];
+    const urls = [/\/customer\/login/, /\/admin\/login/, /^\/service\/sms/];
     result.includes = (url) => {
         let isIncluded = false;
         for (let i = 0; i < urls.length; i++) {
-            if (url.startsWith(urls[i])) {
+            if (url.match(urls[i])) {
                 isIncluded = true;
                 break;
             }
@@ -82,9 +82,12 @@ const authCheck = (req, res, next) => {
                 let contains = false;
                 allTarget.forEach((res) => {
                     if (res.auth === auth) {
-                        if (res.url.includes(originalUrl)) {
-                            contains = true;
-                            next();
+                        for (let i = 0; i < res.url.length; i++) {
+                            console.log(originalUrl + "," + res.url[i] + "," + (originalUrl.startsWith(res.url[i])));
+                            if (originalUrl.startsWith(res.url[i])) {
+                                contains = true;
+                                next();
+                            }
                         }
                     }
                 });
