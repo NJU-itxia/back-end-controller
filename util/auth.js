@@ -72,9 +72,11 @@ const authCheck = (req, res, next) => {
             if (error) {
                 next(error);
             } else {
-                let auth;
+                let auth, uid;
                 try {
-                    auth = jwt.decode(authData)['auth'];  // token expire, authData not have auth's key
+                    let realData = jwt.decode(authData);
+                    uid = realData['phone'];
+                    auth = realData['auth'];  // token expire, authData not have auth's key
                 } catch (error) {
                     next(error);
                 }
@@ -86,6 +88,7 @@ const authCheck = (req, res, next) => {
                             console.log(originalUrl + "," + res.url[i] + "," + (originalUrl.startsWith(res.url[i])));
                             if (originalUrl.startsWith(res.url[i])) {
                                 contains = true;
+                                req.headers.id = uid;
                                 next();
                             }
                         }

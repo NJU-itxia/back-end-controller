@@ -12,7 +12,7 @@ module.exports = router;
  */
 router.use('/login', (req, res, next) => {
     req.auth = {
-        phone: req.body.phone,
+        account: req.body.phone,
         auth: 'customer'
     };
     getToken(req, res, next);

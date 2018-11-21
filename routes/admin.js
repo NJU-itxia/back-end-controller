@@ -22,7 +22,7 @@ router.post('/login', async (req, res, next) => {
             if (result) console.log(role);
         });
         req.auth = {
-            phone: req.body.id,
+            account: req.body.id,
             auth: role,
         };
         getToken(req, res, next);
