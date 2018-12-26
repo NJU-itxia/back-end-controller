@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const config = require('../config/config');
+const axios = require('axios');
 
 /**
  * 初始化数据库连接池
@@ -27,7 +28,7 @@ const dataUtil = exports = module.exports = {};
  * @param next 回调方法
  * @returns {Promise<any>}
  */
-dataUtil.checkLogin = (username, password, next) => {
+dataUtil.checkLogin = (username, password) => {
     const queryStr = 'select account, password, admin from members where account= ?';
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -50,4 +51,21 @@ dataUtil.checkLogin = (username, password, next) => {
             }
         })
     })
+};
+
+dataUtil.checkUserLogin = (username, password) => {
+    return new Promise(((resolve, reject) => {
+        axios.post(
+            config.loginUrl + "/" + username + "/" + password,
+            JSON.stringify({})
+        ).then((res) => {
+            if(res.data.success) {
+                resolve(true);
+            }else {
+                reject();
+            }
+        }).catch((err) => {
+            reject(err);
+        })
+    }))
 };

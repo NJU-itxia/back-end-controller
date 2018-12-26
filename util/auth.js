@@ -11,7 +11,7 @@ const readAuthJson = file.readAuthJson;
  */
 const ignoreUrl = (() => {
     let result = {};
-    const urls = [/\/customer\/login/, /\/admin\/login/, /^\/service\/sms/];
+    const urls = [/\/customer\/login/, /\/admin\/login/, /^\/service\/sms/, /\/customer\/verify.*/];
     result.includes = (url) => {
         let isIncluded = false;
         for (let i = 0; i < urls.length; i++) {

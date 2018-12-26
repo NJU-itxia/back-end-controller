@@ -24,8 +24,6 @@ const allowCrossDomain = function (req, res, next) {
     next();
 };
 
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({extended: true}));
 app.use(allowCrossDomain);
 app.use(logger('dev'));
 // app.use(express.json());
@@ -33,15 +31,23 @@ app.use(cookieParser());
 
 app.use('/', checkToken);
 app.use('/', authCheck);
+
+// app.use(bodyParser.json()); // for parsing application/json
+// app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', router);
 
 for (let path in config.proxy) {
-    if(config.proxy.hasOwnProperty(path)) {
+    if (config.proxy.hasOwnProperty(path)) {
         const proxyPath = config.proxy[path];
         const proxyOption = {target: proxyPath, changeOrigin: true};
         app.use(path, proxyMiddleWare(proxyOption))
     }
 }
+
+const restore = function (proxyReq, req, res, options) {
+    proxyReq.body = req.body
+};
+
 
 app.use(error.appError);
 module.exports = app;
