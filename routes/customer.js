@@ -14,10 +14,10 @@ module.exports = router;
  */
 router.use('/verify', bodyParser.json());
 router.use('/verify', bodyParser.urlencoded({extended: true}));
-router.use('/verify', async (req, res, next) => {
+router.use('/verify', (req, res, next) => {
     const phone = req.body.phone;
     const code = req.body.code;
-    const result = await dataUtil.checkUserLogin(phone, code);
+    // const result = await dataUtil.checkUserLogin(phone, code);
     if (result) {
         req.auth = {
             account: req.body.phone,
