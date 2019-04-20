@@ -115,7 +115,9 @@ const getToken = (req, res, next) => {
     const token = jwt.sign(data, config.jwt.secret, {
         expiresIn: config.jwt.expires
     });
-    res.cookie('token', token);
+    res.cookie('token', token, {
+        expires: new Date(Date.now() + 900000)
+    });
     next();
 };
 
