@@ -74,7 +74,7 @@ const authCheck = (req, res, next) => {
             } else {
                 let auth, uid;
                 try {
-                    let realData = jwt.decode(authData);
+                    let realData = jwt.verify(authData, config.jwt.secret);
                     uid = realData['account'];
                     auth = realData['auth'];  // token expire, authData not have auth's key
                 } catch (error) {
