@@ -7,6 +7,10 @@ exports = module.exports = {
     },
     jwt: {
         secret: 'jwtsecret',
-        expires: '15min',
-    }
+        expires: '3600',
+    },
+    cookie:{
+        expires: '3600',
+        ___:'time in second'
+    },
 };

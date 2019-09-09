@@ -113,10 +113,10 @@ const authCheck = (req, res, next) => {
 const getToken = (req, res, next) => {
     const data = req.auth;
     const token = jwt.sign(data, config.jwt.secret, {
-        expiresIn: config.jwt.expires
+        expiresIn: Number(config.jwt.expires)
     });
     res.cookie('token', token, {
-        expires: new Date(Date.now() + 900000)
+        expires: new Date(Date.now() + Number(config.cookie.expires)*1000)
     });
     next();
 };
