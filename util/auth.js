@@ -116,7 +116,8 @@ const getToken = (req, res, next) => {
         expiresIn: Number(config.jwt.expires)
     });
     res.cookie('token', token, {
-        expires: new Date(Date.now() + Number(config.cookie.expires)*1000)
+        expires: new Date(Date.now() + Number(config.cookie.expires)*1000),
+        domain: config.cookie.domain
     });
     next();
 };
