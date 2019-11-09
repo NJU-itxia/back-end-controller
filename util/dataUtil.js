@@ -48,8 +48,11 @@ dataUtil.checkLogin = (loginName, password) => {
                                 break;
                             case 1:
                                 const userRow = rows[0];
-                                const sha256 = crypto.createHash("sha256");
-                                if(sha256.digest(sha256.digest(password).concat(salt))===userRow.password){
+                                const sha256 = (content)=>{
+                                    const result = crypto.createHash("sha256").update(content).digest("hex");
+                                    return result;
+                                }
+                                if(sha256(sha256(password).concat(salt))===userRow.password){
                                     resolve(userRow.role);  //返回角色
                                 }
                                 else{
