@@ -59,12 +59,6 @@ dataUtil.checkLogin = (loginName, password) => {
                             default:
                                 reject("登录名有重复")  //不应该出现
                         }
-                        let result;
-                        if (rows && rows[0] && rows[0].password && rows[0].password === password) {
-                            const row = rows[0];
-                            result = row.admin ? 'admin' : 'knight';
-                        }
-                        resolve(result);
                     }
                 });
                 connection.release();
