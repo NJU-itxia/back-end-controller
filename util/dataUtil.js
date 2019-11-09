@@ -32,7 +32,7 @@ const dataUtil = exports = module.exports = {};
  * @returns {Promise<any>}
  */
 dataUtil.checkLogin = (loginName, password) => {
-    const queryStr = 'select password, role from members where login_name= ?';
+    const queryStr = 'select password, role from member where login_name= ?';
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
