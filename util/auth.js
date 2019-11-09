@@ -20,7 +20,11 @@ const ignoreUrl = (() => {
                 break;
             }
         }
-        return isIncluded;
+        /**
+         * TODO remove
+         * 测试用
+         */
+        return true;
     };
     return result;
 })();
@@ -117,7 +121,6 @@ const getToken = (req, res, next) => {
     });
     res.cookie('token', token, {
         expires: new Date(Date.now() + Number(config.cookie.expires)*1000),
-        domain: config.cookie.domain
     });
     next();
 };
