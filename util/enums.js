@@ -14,9 +14,13 @@ module.exports = enums = {
       errorCode: 0,
       errorMessage: "请求成功"
     },
+    invalidArgument: {
+      errorCode: 8,
+      errorMessage: "参数名不正确"
+    },
     invalidPassword: {
       errorCode: 9,
-      errorMessage: "密码不正确"
+      errorMessage: "账号或密码不正确"
     }
   }
 };

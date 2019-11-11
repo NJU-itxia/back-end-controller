@@ -8,4 +8,6 @@ const router = express.Router({});
 exports = module.exports = router;
 
 router.use('/customer', customer);
-router.use('/admin', admin);
+
+//处理登录、注销
+router.use('', admin);

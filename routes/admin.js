@@ -4,6 +4,7 @@ const auth = require('../util/auth');
 const dataUtil = require('../util/dataUtil');
 const bodyParser = require('body-parser');
 const resultWrapper = require("../util/resultWrapper")
+const errorCode = require("../util/enums").errorCode
 
 const getToken = auth.getToken;
 
@@ -16,22 +17,26 @@ module.exports = router;
 router.use('/login', bodyParser.json());
 router.use('/login', bodyParser.urlencoded({extended: true}));
 router.post('/login', async (req, res, next) => {
-    const loginName = req.body.loginName;
-    const password = req.body.password;
-    console.log(`on /login:${loginName},${password}`)
-    if (loginName === undefined || loginName === '' || password === undefined || password === '') {
-        return next(new Error("Wrong Parameter"));
+    const {loginName,password} = req.body;
+    if (!!!loginName || !!!password) {
+        res.statusCode = 400;
+        res.json(resultWrapper.wrap(errorCode.invalidArgument))
+        return;
     } else {
-        const role = await dataUtil.checkLogin(loginName, password);
-        req.auth = {
-            account: req.body.loginName,
-            auth: role,
-        };
-        getToken(req, res, next);
-        if(role!==undefined){
-            //TODO 修改权限
-            res.json(resultWrapper.wrapSuccess())
-        }
+        dataUtil.checkLogin(loginName, password).then(role=>{
+            req.auth = {
+                account: req.body.loginName,
+                auth: role,
+            };
+            getToken(req, res, next);
+            if(role!==undefined){
+                //TODO 修改权限
+                res.json(resultWrapper.wrapSuccess());
+            }
+        })
+        .catch(e=>{
+            res.json(resultWrapper.wrap(errorCode.invalidPassword,e));
+        })
     }
 });
 
