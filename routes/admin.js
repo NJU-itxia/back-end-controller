@@ -1,10 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router({});
-const auth = require('../util/auth');
-const dataUtil = require('../util/dataUtil');
-const bodyParser = require('body-parser');
-const resultWrapper = require("../util/resultWrapper")
-const errorCode = require("../util/enums").errorCode
+const auth = require("../util/auth");
+const dataUtil = require("../util/dataUtil");
+const bodyParser = require("body-parser");
+const resultWrapper = require("../util/resultWrapper");
+const errorCode = require("../util/enums").errorCode;
+const tokenUtil = require("../auth/tokenUtil");
+const config = require("../config/config");
 
 const getToken = auth.getToken;
 
@@ -14,39 +16,37 @@ module.exports = router;
  * admin用户登陆
  * 如果将数据层改到java端，则需要修改
  */
-router.use('/login', bodyParser.json());
-router.use('/login', bodyParser.urlencoded({extended: true}));
-router.post('/login', async (req, res, next) => {
-    const {loginName,password} = req.body;
-    if (!!!loginName || !!!password) {
-        res.statusCode = 400;
-        res.json(resultWrapper.wrap(errorCode.invalidArgument))
-        return;
-    } else {
-        dataUtil.checkLogin(loginName, password).then(role=>{
-            req.auth = {
-                account: req.body.loginName,
-                auth: role,
-            };
-            getToken(req, res, next);
-            if(role!==undefined){
-                //TODO 修改权限
-                res.json(resultWrapper.wrapSuccess());
-            }
-        })
-        .catch(e=>{
-            res.json(resultWrapper.wrap(errorCode.invalidPassword,e));
-        })
-    }
+router.use("/login", bodyParser.json());
+router.use("/login", bodyParser.urlencoded({ extended: true }));
+router.post("/login", async (req, res, next) => {
+  const { loginName, password } = req.body;
+  if (!!!loginName || !!!password) {
+    res.statusCode = 400;
+    res.json(resultWrapper.wrap(errorCode.invalidArgument));
+    return;
+  } else {
+    dataUtil
+      .checkLogin(loginName, password)
+      .then(memberInfo => {
+        if (memberInfo !== undefined) {
+          //TODO 修改权限
+          res.cookie("itxia-token", tokenUtil.generateToken(memberInfo,3600), {
+            maxAge: config.cookie.expires * 1000
+          });
+          res.json(resultWrapper.wrapSuccess());
+        }
+      })
+      .catch(e => {
+        res.json(resultWrapper.wrap(errorCode.invalidPassword, e.message));
+      });
+  }
 });
 
 /**
  * 登出，使用token
  * token会在auth.js中使用checkToken方法检查
  */
-router.use('/logout', (req, res, next) => {
-    res.clearCookie('token');
-    res.json({
-        success: true
-    });
+router.use("/logout", (req, res, next) => {
+  res.clearCookie("itxia-token");
+  res.json(resultWrapper.wrapSuccess());
 });

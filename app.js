@@ -8,6 +8,7 @@ const auth = require('./util/auth');
 const router = require('./routes/router');
 const error = require('./util/error');
 const config = require('./config/config');
+const tokenUtil = require('./auth/tokenUtil');
 
 const getToken = auth.getToken;
 const checkToken = auth.checkToken;
@@ -16,11 +17,11 @@ const authCheck = auth.authCheck;
 const app = express();
 
 app.use(function (req, res, next) {
+    console.log(req.method + ":" + req.url);
     res.header('Access-Control-Allow-Origin', req.headers.origin);
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Credentials', true);
-    res.header('Content-Type', 'application/json;charset=utf-8');
     //处理OPTIONS请求
     if(req.method==="OPTIONS"){
         res.send();
@@ -32,6 +33,17 @@ app.use(function (req, res, next) {
 app.use(logger('dev'));
 // app.use(express.json());
 app.use(cookieParser());
+
+app.use("/",(req,res,next)=>{
+    const token = req.cookies["itxia-token"];
+    if(token){
+        const de = tokenUtil.verifyToken(token);
+        req.headers["memberID"] = de["id"];
+    }else{
+        console.log("no token")
+    }
+    next();
+})
 
 app.use('/', checkToken);
 app.use('/', authCheck);

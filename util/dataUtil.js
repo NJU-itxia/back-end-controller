@@ -32,7 +32,7 @@ const dataUtil = exports = module.exports = {};
  * @returns {Promise<any>}
  */
 dataUtil.checkLogin = (loginName, password) => {
-    const queryStr = 'select password, role from member where login_name= ?';
+    const queryStr = 'select id, password, role from member where login_name= ?';
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
@@ -42,6 +42,7 @@ dataUtil.checkLogin = (loginName, password) => {
                     if (err) {
                         reject(err);
                     } else {
+                        console.log(rows.length)
                         switch(rows.length){
                             case 0:
                                 reject("无此用户")
@@ -53,7 +54,7 @@ dataUtil.checkLogin = (loginName, password) => {
                                     return result;
                                 }
                                 if(sha256(sha256(password).concat(salt))===userRow.password){
-                                    resolve(userRow.role);  //返回角色
+                                    resolve({id:userRow.id ,role:userRow.role});  //返回角色
                                 }
                                 else{
                                     reject("密码不正确")
