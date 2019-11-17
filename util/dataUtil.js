@@ -32,7 +32,7 @@ const dataUtil = exports = module.exports = {};
  * @returns {Promise<any>}
  */
 dataUtil.checkLogin = (loginName, password) => {
-    const queryStr = 'select id, password, role from member where login_name= ?';
+    const queryStr = 'select id, password, role, status from member where login_name= ?';
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
             if (err) {
@@ -42,13 +42,15 @@ dataUtil.checkLogin = (loginName, password) => {
                     if (err) {
                         reject(err);
                     } else {
-                        console.log(rows.length)
                         switch(rows.length){
                             case 0:
                                 reject("无此用户")
                                 break;
                             case 1:
                                 const userRow = rows[0];
+                                if(userRow.status!==1){
+                                    reject("账号已被禁用")
+                                }
                                 const sha256 = (content)=>{
                                     const result = crypto.createHash("sha256").update(content).digest("hex");
                                     return result;
