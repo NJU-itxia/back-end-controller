@@ -6,12 +6,7 @@ const axios = require('axios');
  * 初始化数据库连接池
  * @type {Pool}
  */
-const pool = mysql.createPool({
-    host: config.db.host,
-    user: config.db.user,
-    password: config.db.password,
-    database: config.db.database,
-});
+const pool = mysql.createPool(config.db);
 
 /**
  * 其实我不知道
